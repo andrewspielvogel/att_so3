@@ -33,5 +33,6 @@ include_directories(include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 
 add_executable(att_so3_publisher src/att_so3_publisher.cpp src/so3_att.cpp)
+add_dependencies(att_so3_publisher dscl_msgs_generate_messages_cpp)
 target_link_libraries(att_so3_publisher ${catkin_LIBRARIES})
 set_target_properties(att_so3_publisher PROPERTIES COMPILE_FLAGS "-O3")
