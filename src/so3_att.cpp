@@ -1,6 +1,6 @@
 /**
  * @file
- * @date March 2018
+ * @date July 2018
  * @author Andrew Spielvogel (andrewspielvogel@gmail.com)
  * @brief Implementation of so3_att.h.
  *
@@ -39,6 +39,10 @@ SO3Att::SO3Att(AttParams params)
 
   P_ = R_ni.transpose()*a_n_.normalized()*a_n_.normalized().transpose()*R_ni;
 
+  start_ = 0;
+
+  prev_t_ = 0;
+
 
 }
 
@@ -49,16 +53,22 @@ SO3Att::~SO3Att(void)
 void SO3Att::step(ImuPacket measurement)
 {
 
-  
-  if (dt == 0 )
+
+  if (!start_)
   {
-    return;
+      
+    prev_t_ = measurement.t;
+      
+    start_ = 1;
+      
   }
 
   
   /**************************************************************
    * Attitude Estimator
    **************************************************************/
+
+  double dt = measurement.t - prev_t_;
   
   P_ = R_ni.transpose()*a_n_.normalized()*a_n_.normalized().transpose()*R_ni;
 
@@ -67,5 +77,7 @@ void SO3Att::step(ImuPacket measurement)
   h_error_ = skew((P_*measurement.mag).normalized())*P_*R_ni.transpose().block<3,1>(0,0);
   
   R_ni     =  R_ni*((skew(K_g_*g_error_ + K_north_*h_error_ + measurement.ang - R_ni.transpose()*w_E_n_)*dt).exp());
+
+  prev_t_ = measurement.t;
   
 }

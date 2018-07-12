@@ -66,7 +66,7 @@ public:
     
     chatter_ = n.advertise<geometry_msgs::Vector3Stamped>("att",1);
 
-    att_ = new S03Att(params);
+    att_ = new SO3Att(params);
 
   }
 
