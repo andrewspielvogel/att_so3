@@ -9,7 +9,7 @@
 #include <ros/ros.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <att_so3/Imu9DOF.h> 
+#include <dscl_msgs/Imu9DOF.h> 
 #include <att_so3/so3_att.h>
 #include <att_so3/helper_funcs.h>
 #include <geometry_msgs/QuaternionStamped.h>
@@ -66,7 +66,7 @@ public:
     params.R0           = rpy2rot(rpy);
     params.lat          = std::stod(lat);
     
-    chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("att",1);
+    chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("/att",1);
 
     att_ = new SO3Att(params);
 
@@ -77,7 +77,7 @@ public:
    * @brief Publishing callback function.
    * 
    */
-  void callback(const att_so3::Imu9DOF::ConstPtr& msg)
+  void callback(const dscl_msgs::Imu9DOF::ConstPtr& msg)
   {
 
     ImuPacket measurement;

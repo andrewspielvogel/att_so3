@@ -9,37 +9,26 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   std_msgs
-  genmsg
-)
-
-add_message_files(
-  FILES
-  Imu9DOF.msg
-  )
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
+  dscl_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES att_so3
-  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs
+  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs dscl_msgs
 )
 
 
 
 ## For Eigen library support
 find_package(cmake_modules REQUIRED)
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 ###########
 ## Build ##
 ###########
 
-include_directories(include ${Eigen_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+include_directories(include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 
 
