@@ -7,10 +7,12 @@
 
 
 #include <ros/ros.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <att_so3/Imu9DOF.h> 
 #include <att_so3/so3_att.h>
 #include <att_so3/helper_funcs.h>
-#include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/QuaternionStamped.h>
 #include <iostream>   
 
 
@@ -64,7 +66,7 @@ public:
     params.R0           = rpy2rot(rpy);
     params.lat          = std::stod(lat);
     
-    chatter_ = n.advertise<geometry_msgs::Vector3Stamped>("att",1);
+    chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("att",1);
 
     att_ = new SO3Att(params);
 
@@ -88,15 +90,16 @@ public:
 
     att_->step(measurement);
 
-    Eigen::Vector3d rph = rot2rph(att_->R_ni);
+    Eigen::Quaterniond q(att_->R_ni);
     
     // initialize mems_bias msg
-    geometry_msgs::Vector3Stamped att;
+    geometry_msgs::QuaternionStamped att;
 
     att.header.stamp = msg->header.stamp;
-    att.vector.x     = rph(0);
-    att.vector.y     = rph(1);
-    att.vector.z     = rph(2);
+    att.quaternion.x = q.x();
+    att.quaternion.y = q.y();
+    att.quaternion.z = q.z();
+    att.quaternion.w = q.w(); 
 
     // publish packet
     chatter_.publish(att);
@@ -121,7 +124,7 @@ int main(int argc, char **argv)
      **********************************************************************/
     AttNode att_est(n);
 
-    sub = n.subscribe("imu/imu",1,&AttNode::callback, &att_est);
+    sub = n.subscribe("imu_corrected",1,&AttNode::callback, &att_est);
     
     ros::spin();
     

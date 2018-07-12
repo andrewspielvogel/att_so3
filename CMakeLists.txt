@@ -45,4 +45,4 @@ include_directories(include ${Eigen_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 add_executable(att_so3_publisher src/att_so3_publisher.cpp src/so3_att.cpp)
 target_link_libraries(att_so3_publisher ${catkin_LIBRARIES})
-#set_target_properties(att_so3_publisher PROPERTIES COMPILE_FLAGS "-O3")
+set_target_properties(att_so3_publisher PROPERTIES COMPILE_FLAGS "-O3")
