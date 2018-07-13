@@ -11,7 +11,7 @@
 #include <unsupported/Eigen/MatrixFunctions>
 #include <att_so3/helper_funcs.h>
 #include <att_so3/so3_att.h>
-
+#include <iostream>   
 
 
 
@@ -74,7 +74,7 @@ void SO3Att::step(ImuPacket measurement)
 
   // Define local level (g_error_) and heading (h_error_) error terms
   g_error_ = skew((measurement.acc).normalized())*R_ni.transpose()*a_n_.normalized();
-  h_error_ = skew((P_*measurement.mag).normalized())*P_*R_ni.transpose().block<3,1>(0,0);
+  h_error_ = P_*skew(((Eigen::Matrix3d::Identity() - P_)*measurement.mag).normalized())*R_ni.transpose().block<3,1>(0,0);
   
   R_ni     =  R_ni*((skew(K_g_*g_error_ + K_north_*h_error_ + measurement.ang - R_ni.transpose()*w_E_n_)*dt).exp());
 

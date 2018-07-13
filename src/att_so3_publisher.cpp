@@ -13,6 +13,7 @@
 #include <att_so3/so3_att.h>
 #include <att_so3/helper_funcs.h>
 #include <geometry_msgs/QuaternionStamped.h>
+#include <geometry_msgs/Vector3Stamped.h>
 #include <iostream>   
 
 
@@ -27,7 +28,8 @@ class AttNode
 
 private:
   
-  ros::Publisher chatter_; /**< Node publisher. */
+  ros::Publisher chatter_; /**< Quaternion publisher. */
+  ros::Publisher chatter_rpy_; /**< RPY publisher. */
 
   SO3Att* att_;
   
@@ -67,6 +69,8 @@ public:
     params.lat          = std::stod(lat);
     
     chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("/att",1);
+    chatter_rpy_ = n.advertise<geometry_msgs::Vector3Stamped>("/rpy",1);
+
 
     att_ = new SO3Att(params);
 
@@ -94,6 +98,14 @@ public:
     
     // initialize mems_bias msg
     geometry_msgs::QuaternionStamped att;
+    geometry_msgs::Vector3Stamped rpy;
+
+    Eigen::Vector3d rph = rot2rph(att_->R_ni)*180.0/M_PI;
+
+    rpy.header.stamp = msg->header.stamp;
+    rpy.vector.x = rph(0);
+    rpy.vector.y = rph(1);
+    rpy.vector.z = rph(2);
 
     att.header.stamp = msg->header.stamp;
     att.quaternion.x = q.x();
@@ -103,6 +115,7 @@ public:
 
     // publish packet
     chatter_.publish(att);
+    chatter_rpy_.publish(rpy);
     
   }
  
