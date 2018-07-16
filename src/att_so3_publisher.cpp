@@ -35,6 +35,8 @@ private:
   
 public:
 
+  AttParams params;
+
   /**
    *
    * @brief Constructor.
@@ -44,8 +46,6 @@ public:
    */
   AttNode(ros::NodeHandle n){
 
-
-    AttParams params;
 
     ROS_INFO("Loading estimator params.");
 
@@ -60,6 +60,7 @@ public:
     n.param<std::string>("k_north",k_north, "1,1,1");
     n.param<std::string>("r0",r0,"0,0,0");
     n.param<std::string>("lat",lat,"39.32");
+    n.param<std::string>("frame_id",params.frameId,"imu");
     
     sscanf(r0.c_str(),"%lf,%lf,%lf",&rpy(0),&rpy(1),&rpy(2));
 
@@ -68,8 +69,8 @@ public:
     params.R0           = rpy2rot(rpy);
     params.lat          = std::stod(lat);
     
-    chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("/att",1);
-    chatter_rpy_ = n.advertise<geometry_msgs::Vector3Stamped>("/rpy",1);
+    chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("att",1);
+    chatter_rpy_ = n.advertise<geometry_msgs::Vector3Stamped>("rpy",1);
 
 
     att_ = new SO3Att(params);
@@ -102,12 +103,16 @@ public:
 
     Eigen::Vector3d rph = rot2rph(att_->R_ni)*180.0/M_PI;
 
-    rpy.header.stamp = msg->header.stamp;
+    rpy.header.stamp    = msg->header.stamp;
+    rpy.header.frame_id = params.frameId;
+      
     rpy.vector.x = rph(0);
     rpy.vector.y = rph(1);
     rpy.vector.z = rph(2);
 
-    att.header.stamp = msg->header.stamp;
+    att.header.stamp    = msg->header.stamp;
+    att.header.frame_id = params.frameId;
+    
     att.quaternion.x = q.x();
     att.quaternion.y = q.y();
     att.quaternion.z = q.z();
@@ -127,7 +132,7 @@ int main(int argc, char **argv)
     // initialize node
     ros::init(argc, argv, "att");
 
-    ros::NodeHandle n;
+    ros::NodeHandle n("~");
 
     ros::Subscriber sub; /**< Node subscriber to imu topic. */
 
@@ -137,7 +142,11 @@ int main(int argc, char **argv)
      **********************************************************************/
     AttNode att_est(n);
 
-    sub = n.subscribe("imu_corrected",1,&AttNode::callback, &att_est);
+    char buffer[64];
+
+    sprintf(buffer,"/%s_bias/imu_corrected",att_est.params.frameId.c_str());
+
+    sub = n.subscribe(buffer,1,&AttNode::callback, &att_est);
     
     ros::spin();
     

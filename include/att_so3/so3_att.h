@@ -25,6 +25,8 @@ class AttParams
   Eigen::Matrix3d R0;
   double lat;
 
+  std::string frameId;
+
 };
 
 

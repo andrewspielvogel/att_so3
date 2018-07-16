@@ -1,7 +1,7 @@
 <launch>
     <!-- Node Settings -->
     <arg name="output" default="screen"/>
-    <arg name="imu" default="imu"/>
+    <arg name="imu" default="ms"/>
 
     <!-- IMU Settings -->
     <arg name="device" default="/dev/ttyS0" />
@@ -43,23 +43,26 @@
     </node>
 
 
-    <node pkg="mems_bias" type="mems_bias_publisher" name="bias" output="screen">
+    <node pkg="mems_bias" type="mems_bias_publisher" name="$(arg frame_id)_bias" output="$(arg output)">
 
           <param name="k_acc" value="1,1,1" type="string" />
 	  <param name="k_mag" value="1,1,1" type="string" />
 	  <param name="k_acc_bias" value="0.1,0.1,0.1" type="string" />
 	  <param name="k_ang_bias" value="0.01,0.01,0.01" type="string" />
-	  <param name="k_mag_bias" value="0.5,0.5,0.5" type="string" />	       
+	  <param name="k_mag_bias" value="0.5,0.5,0.5" type="string" />
+	  <param name="frame_id" type="string" value="$(arg frame_id)"/>
+
 
     </node>
 
-
-    <node pkg="att_so3" type="att_so3_publisher" name="att" output="screen">
+    <node pkg="att_so3" type="att_so3_publisher" name="$(arg frame_id)_att" output="$(arg output)">
 
           <param name="k_g" value="1,1,1" type="string" />
 	  <param name="k_north" value="1,1,1" type="string" />
 	  <param name="r0" value="0,0,0" type="string" />
-	  <param name="lat" value="39.32" type="string" />	       
+	  <param name="lat" value="39.32" type="string" />
+  	  <param name="frame_id" type="string" value="$(arg frame_id)"/>
+
 
     </node>
 
