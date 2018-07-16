@@ -11,7 +11,7 @@
 #include <Eigen/Geometry>
 #include <dscl_msgs/Imu9DOF.h> 
 #include <att_so3/so3_att.h>
-#include <att_so3/helper_funcs.h>
+#include <helper_funcs/helper_funcs.h>
 #include <geometry_msgs/QuaternionStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <iostream>   

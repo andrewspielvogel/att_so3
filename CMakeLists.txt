@@ -10,12 +10,13 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   dscl_msgs
+  helper_funcs
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES att_so3
-  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs dscl_msgs
+  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs dscl_msgs helper_funcs
 )
 
 
@@ -33,6 +34,6 @@ include_directories(include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 
 add_executable(att_so3_publisher src/att_so3_publisher.cpp src/so3_att.cpp)
-add_dependencies(att_so3_publisher dscl_msgs_generate_messages_cpp)
+add_dependencies(att_so3_publisher dscl_msgs_generate_messages_cpp helper_funcs)
 target_link_libraries(att_so3_publisher ${catkin_LIBRARIES})
 set_target_properties(att_so3_publisher PROPERTIES COMPILE_FLAGS "-O3")

@@ -9,7 +9,7 @@
 #include <math.h>
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
-#include <att_so3/helper_funcs.h>
+#include <helper_funcs/helper_funcs.h>
 #include <att_so3/so3_att.h>
 #include <iostream>   
 
