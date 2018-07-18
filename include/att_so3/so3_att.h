@@ -22,8 +22,8 @@ class AttParams
  public:
   Eigen::Matrix3d K_g;     /**< Gravity estimate gain. */
   Eigen::Matrix3d K_north; /**< North estimate gain. */
-  Eigen::Matrix3d R0;
-  double lat;
+  Eigen::Matrix3d R0; /**< Initial Rotaion. */
+  double lat; /**< Latitude. */
 
   std::string frameId;
 
