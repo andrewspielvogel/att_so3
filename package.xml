@@ -24,8 +24,8 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>dscl_msgs</build_depend>
   <build_depend>helper_funcs</build_depend>
-  <build_depend>truenorth</build_depend>
-  <run_depend>truenorth</run_depend>
+  <build_depend>mems_bias</build_depend>
+  <run_depend>mems_bias</run_depend>
   <run_depend>helper_funcs</run_depend>
   <run_depend>eigen</run_depend>
   <run_depend>geometry_msgs</run_depend>

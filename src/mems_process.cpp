@@ -3,34 +3,12 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <helper_funcs/helper_funcs.h>
-//#include <mems_bias/mems_bias.h>
+#include <mems_bias/mems_bias.h>
 #include <att_so3/so3_att.h>
-//#include <truenorth/gyro_data.h>
 #include <string>
 #include <iostream>
 
-/**
- *
- * @brief Struct for storing parameters for attitude post processing.
- * 
- */
-struct config_params {
-  
-  int hz;
-  std::string o_file;
-  std::string i_file;
-  std::string last_mod;
-  Eigen::Matrix3d K_acc;
-  Eigen::Matrix3d K_mag;
-  Eigen::Matrix3d K_ang_bias;
-  Eigen::Matrix3d K_acc_bias;
-  Eigen::Matrix3d K_mag_bias;
-  Eigen::Matrix3d K_g;
-  Eigen::Matrix3d K_north;
-  Eigen::Matrix3d R0;
-  Eigen::Matrix3d R_align;
-  
-};
+
 
 config_params load_params(char* config_file)
 {
@@ -114,13 +92,24 @@ config_params load_params(char* config_file)
       Eigen::Vector3d rpy_align;
       sscanf(data,"[%lf,%lf,%lf]",&rpy_align(0),&rpy_align(1),&rpy_align(2));
       params.R_align = rpy2rot(rpy_align);
-
     }
     else if((std::string(field))=="rpy_r0")
     {
       Eigen::Vector3d rpy_r0;
       sscanf(data,"[%lf,%lf,%lf]",&rpy_r0(0),&rpy_r0(1),&rpy_r0(2));
       params.R0 = rpy2rot(rpy_r0);
+    }
+    else if((std::string(field))=="k_north")
+    {
+      Eigen::Vector3d k_north;
+      sscanf(data,"[%lf,%lf,%lf]",&k_north(0),&k_north(1),&k_north(2));
+      params.K_north = rpy2rot(k_north);
+    }
+    else if((std::string(field))=="k_g")
+    {
+      Eigen::Vector3d k_g;
+      sscanf(data,"[%lf,%lf,%lf]",&k_g(0),&k_g(1),&k_g(2));
+      params.K_north = rpy2rot(k_g);
     }
     else if ((std::string(field))=="last_mod")
     {
@@ -155,6 +144,8 @@ void print_loaded_params(config_params params)
   std::cout<<"K_ang_bias = \n"<< params.K_ang_bias <<"\n";
   std::cout<<"K_acc_bias = \n"<< params.K_acc_bias <<"\n";
   std::cout<<"K_mag_bias = \n"<< params.K_mag_bias <<"\n";
+  std::cout<<"K_g = \n"<< params.K_g <<"\n";
+  std::cout<<"K_north = \n"<< params.K_north <<"\n";
 
 }
 
@@ -189,72 +180,84 @@ int main(int argc, char* argv[])
    *   
    ***************************************************/
   
-  // MEMSBias bias(params);
-  // SO3Att att(params);
-  // GyroData gyro_data(params.hz);
+  MEMSBias bias(params);
+  SO3Att att(params);
 
-  // char msg_type[32];
+  ImuPacket packet;
+  packet.dt = 1.0/(float)params.hz;
+  
+  char msg_type[32];
+  int year;
+  int month;
+  int day;
+  int hour;
+  int minute;
+  float second;
+  
+  float rov_time;
+  float ros_time;
 
-  // printf("***********************************\n");
-  // printf("    RUNNING ATTITUDE ESTIMATION\n");
-  // printf("***********************************\n");
+  printf("***********************************\n");
+  printf("    RUNNING ATTITUDE ESTIMATION\n");
+  printf("***********************************\n");
 
-  // std::ifstream infile(params.i_file.c_str());
-  // FILE *outfile;
-  // outfile = fopen(params.o_file.c_str(),"w");
+  std::ifstream infile(params.i_file.c_str());
+  FILE *outfile;
+  outfile = fopen(params.o_file.c_str(),"w");
 
-  // std::string line;
-  // double time_start = 0.0;
-  // bool start = false;
-  // int hours = 0;
-  // int minutes = 0;
+  std::string line;
+  double time_start = 0.0;
+  bool start = false;
+  int hours = 0;
+  int minutes = 0;
 
-  // int cnt = 1;
+  int cnt = 1;
   
 
-  // fprintf(outfile,"PARAMS,%s,%d,%s,%s,%f,%f,%f,%f,%f,%f,%f\n",params.last_mod.c_str(),params.hz,params.o_file.c_str(),params.i_file.c_str(),params.k(0),params.k(1),params.k(2),params.k(3),params.k(4),params.k(5),params.k(6));
+  fprintf(outfile,"PARAMS,%s,%d,%s,%s,%f,%f,%f,%f,%f,%f,%f\n",params.last_mod.c_str(),params.hz,params.o_file.c_str(),params.i_file.c_str(),params.K_g(0,0),params.K_north(0,0),params.K_acc(0,0),params.K_mag(0,0),params.K_acc_bias(0,0),params.K_ang_bias(0,0),params.K_mag_bias(0,0));
 
-  // while (std::getline(infile, line))
-  // {
+  while (std::getline(infile, line))
+    {
 
-  //   sscanf(line.c_str(),"%[^,],%lf,%lf,%lf,%lf,%lf,%lf, %lf,%lf,%lf, %f, %d, %lf,%lf, %*d, %*d, %*d, %*d, %*d, %*d,%*f,%*f,%*f \n",msg_type,&gyro_data.ang(0),&gyro_data.ang(1),&gyro_data.ang(2),&gyro_data.acc(0),&gyro_data.acc(1),&gyro_data.acc(2),&gyro_data.mag(0),&gyro_data.mag(1),&gyro_data.mag(2),&gyro_data.temp,&gyro_data.seq_num,&gyro_data.timestamp,&gyro_data.comp_timestamp);
+      sscanf(line.c_str(),"%s %d/%d/%d %d:%d:%f %f %f %lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%f\n",msg_type,&year,&month,&day,&hour,&minute,&second,&rov_time,&ros_time,&packet.t,&packet.ang(0),&packet.ang(1),&packet.ang(2),&packet.acc(0),&packet.acc(1),&packet.acc(2),&packet.mag(0),&packet.mag(1),&packet.mag(2),&packet.fluid_pressure);
  
 
-  //   if (!start)
-  //   {
+    if (!start)
+    {
 
-  //     start = true;
-  //     time_start = gyro_data.timestamp;
+      start = true;
+      time_start = packet.t;
       
-  //   }
-  //   float time = gyro_data.timestamp - time_start;
+    }
+    float time = packet.t - time_start;
 
 
 
-  //   bias.step(gyro_data.ang,gyro_data.acc,gyro_data.mag,((float) 1)/(float)params.hz,gyro_data.timestamp);
+    bias.step(packet);
+    att.step(bias.imu_corrected);
 
-  //   Eigen::Vector3d rph_mems = rot2rph(bias.Rni);
+    Eigen::Vector3d rph_mems = rot2rph(att.R_ni*params.R_align.transpose());
 
-  //   if (1)//(cnt % (params.hz/100)) == 0)
-  //   {
-  //     fprintf(outfile,"BIAS_PRO,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",gyro_data.timestamp,bias.acc_hat(0),bias.acc_hat(1),bias.acc_hat(2),bias.mag_hat(0),bias.mag_hat(1),bias.mag_hat(2),bias.a_b(0),bias.a_b(1),bias.a_b(2),bias.w_b(0),bias.w_b(1),bias.w_b(2),bias.m_b(0),bias.m_b(1),bias.m_b(2),rph_mems(0),rph_mems(1),rph_mems(2));
-  //   }
+    if ((cnt % (params.hz/100)) == 0)
+    {
+      fprintf(outfile,"ATT_PRO,%d,%02d,%02d,%02d,%02d,%02f,%f,%f,%f,%f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",year,month,day,hour,minute,second,packet.t,rph_mems(0),rph_mems(1),rph_mems(2),bias.ang_bias(0),bias.ang_bias(1),bias.ang_bias(2),bias.acc_bias(0),bias.acc_bias(1),bias.acc_bias(2),bias.mag_bias(0),bias.mag_bias(1),bias.mag_bias(2),bias.acc_hat(0),bias.acc_hat(1),bias.acc_hat(2),bias.mag_hat(0),bias.mag_hat(1),bias.mag_hat(2),packet.acc(0),packet.acc(1),packet.acc(2),packet.ang(0),packet.ang(1),packet.ang(2),packet.mag(0),packet.mag(1),packet.mag(2),packet.fluid_pressure);
+    }
     
-  //   if ((((int)time) % (60) == 0) && ((int)time/60 != minutes)) {
+    if ((((int)time) % (60) == 0) && ((int)time/60 != minutes)) {
       
-  //     hours   = ((int) time)/3600;
-  //     minutes = ((int) time - hours*3600)/60;
-  //     char buffer [256];
-  //     int n = sprintf(buffer,"%02d:%02d:00 OF DATA PROCESSED",hours,minutes);
-  //     std::cout<<"\r"<<buffer<<std::flush;
-  //   }
+      hours   = ((int) time)/3600;
+      minutes = ((int) time - hours*3600)/60;
+      char buffer [256];
+      int n = sprintf(buffer,"%02d:%02d:00 OF DATA PROCESSED",hours,minutes);
+      std::cout<<"\r"<<buffer<<std::flush;
+    }
 
-  //   cnt++;
+    cnt++;
 
-  // }
-  // printf("\n");
-  // infile.close();
-  // fclose(outfile);
+    }
+  printf("\n");
+  infile.close();
+  fclose(outfile);
 
   return 0;
   

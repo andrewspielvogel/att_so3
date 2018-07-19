@@ -10,45 +10,9 @@
 #define SO3_ATT_H
 
 #include <Eigen/Core>
-
-/**
- *
- * @brief Attitude estimator params.
- *
- */
-class AttParams
-{
-
- public:
-  Eigen::Matrix3d K_g;     /**< Gravity estimate gain. */
-  Eigen::Matrix3d K_north; /**< North estimate gain. */
-  Eigen::Matrix3d R0; /**< Initial Rotaion. */
-  double lat; /**< Latitude. */
-
-  std::string frameId;
-
-};
+#include <helper_funcs/helper_funcs.h>
 
 
-/**
- *
- * @brief IMU packet
- *
- */
-class ImuPacket
-{
-
- public:
-
-  Eigen::Vector3d ang; /**< Angular-rate measurement. */
-  Eigen::Vector3d acc; /**< Linear-acceleration measurement. */
-  Eigen::Vector3d mag; /**< Magnetometer measurement. */
-
-  int seq_num; /**< Measurement sequence number. */
-
-  double t; /**< Measurement timestamp. */
-
-};
 
 
 /**
@@ -64,7 +28,7 @@ public:
    * @param Estimator parameters.
    *
    */
-  SO3Att(AttParams params);
+  SO3Att(config_params params);
 
   
   virtual ~SO3Att(void); /**< Destructor. */

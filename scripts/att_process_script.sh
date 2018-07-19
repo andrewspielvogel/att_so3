@@ -12,12 +12,13 @@ process_att(){
     CSV=$2/microstrain/$3/processed/$1.csv
     CONFIG=$2/microstrain/$3/configs/$1.m
     PDF=$2/microstrain/$3/pdfs/$1.pdf
+    PHINS=$2/phins/$3.INS
 
-    python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6
+    #python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6
 
-    rosrun att_so3 mems_process $CONFIG
-    
-    #python $ATT_SO3=/python/plot_att.py -i $CSV -o $PDF -e $4
+    #rosrun att_so3 mems_process $CONFIG
+
+    python $ATT_SO3/python/plot_att.py -i $CSV -o $PDF -e $3 -p $PHINS
 
 }
 
@@ -30,8 +31,8 @@ EXP=exp1
 DIR=/log
 LOG=2018_07_18_18_11
 HZ=1000
-rpy_align=[1.5708,0,-1.5708]
-rpy_r0=[0,0,1.57]
+rpy_align=[0,0,0]
+rpy_r0=[0,0,0]
 k_acc=[0.1,0.1,0.1]
 k_mag=[1,1,1]
 k_acc_bias=[0.01,0.01,0.1]

@@ -35,7 +35,7 @@ private:
   
 public:
 
-  AttParams params;
+  config_params params;
 
   /**
    *

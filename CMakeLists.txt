@@ -11,13 +11,13 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   dscl_msgs
   helper_funcs
-  truenorth
+  mems_bias
 )
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES att_so3
-  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs dscl_msgs helper_funcs truenorth
+  #LIBRARIES att_so3
+  CATKIN_DEPENDS message_runtime geometry_msgs roscpp std_msgs dscl_msgs helper_funcs mems_bias
 )
 
 
@@ -40,6 +40,6 @@ target_link_libraries(att_so3_publisher ${catkin_LIBRARIES})
 set_target_properties(att_so3_publisher PROPERTIES COMPILE_FLAGS "-O3")
 
 add_executable(mems_process src/mems_process.cpp src/so3_att.cpp)
-add_dependencies(mems_process helper_funcs truenorth)
+add_dependencies(mems_process helper_funcs mems_bias)
 target_link_libraries(mems_process ${catkin_LIBRARIES})
 #set_target_properties(mems_process PROPERTIES COMPILE_FLAGS "-O3")

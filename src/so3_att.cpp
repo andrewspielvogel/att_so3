@@ -21,7 +21,7 @@
  *
  */
 
-SO3Att::SO3Att(AttParams params) 
+SO3Att::SO3Att(config_params params) 
 {
 
   // initialize usefull vectors

@@ -8,13 +8,15 @@ def main(argv):
     o_file = ''
     i_file = ''
     c_file = ''
-    rpy_align = '[1.5708,0,-1.5708]'
+    rpy_align = '[0,0,0]'
     rpy_r0 = '[0,0,0]'
     k_acc = '[0.1,0.1,0.1]'
     k_mag = '[1,1,1]'
     k_acc_bias = '[0.01,0.01,0.1]'
     k_ang_bias = '[0.0001,0.0001,0.01]'
     k_mag_bias = '[1,1,1]'
+    k_g = '[1,1,1]'
+    k_north = '[1,1,1]'
     try:
         opts,args = getopt.getopt(argv,"hi:o:c:l:a:R:k:z:",["ifile=","help","ofile=","hz=","lat=","cfile=","rpy_align=","rpy_Ro="])
     except getopt.GetoptError:
@@ -65,6 +67,8 @@ def main(argv):
     file.write("k_acc_bias = " + k_acc_bias + "\n")
     file.write("k_ang_bias = " + k_ang_bias + "\n")
     file.write("k_mag_bias = " + k_mag_bias + "\n")
+    file.write("k_g = "        + k_g + "\n")
+    file.write("k_north = "    + k_north + "\n")
 
     file.close()
 
