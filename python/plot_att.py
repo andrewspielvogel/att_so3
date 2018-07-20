@@ -12,13 +12,16 @@ import getopt,sys
 def calc_bound(data):
     return max([(abs(data[:,0])).max(),(abs(data[:,1])).max(),(abs(data[:,2])).max()])
 
-def plot_comp(plt,t,data,title,units):
+def plot_comp(plt,t,data,title,units,step):
 
     y_height = calc_bound(data[:,0:3])
     
     if y_height==0.0:
         y_height = 1
-        
+
+    t = t[0:-1:step]
+    data = data[0:-1:step]
+    
     plt.suptitle(title,y=0.99)
     plt.subplot(311)
     plt.plot(t,data[:,0])
@@ -40,6 +43,8 @@ def plot_comp(plt,t,data,title,units):
     plt.grid(True)
 
 def main(argv):
+
+    plot_samp_skip = 100
 
     o_file = ''
     i_file = ''
@@ -71,12 +76,7 @@ def main(argv):
             phins_file = arg
             phins_exists = 1
 
-    if phins_exists:
-        print "LOADING FILE: " + phins_file
-        phins_data = read_csv(phins_file,header=None,sep='\s+|,',engine='python')
-        phins_data = np.matrix(phins_data)
 
-        phins_t = np.array(phins_data[:,5]).flatten()
         
     print "LOADING FILE: " + i_file
     
@@ -85,9 +85,20 @@ def main(argv):
     print "LOADED FILE: " + i_file
 
     data = data.as_matrix()
+    t = data[:,7]#-data[0,7]
 
+    if phins_exists:
+        print "LOADING FILE: " + phins_file
+        phins_data = read_csv(phins_file,header=None,sep='\s+|,',engine='python')
+        phins_data = np.matrix(phins_data)
 
+        phins_t = np.array(phins_data[:,5]).flatten()
 
+        resampled_roll    = np.array([np.interp(phins_t.astype(float),t.astype(float),data[:,8].astype(float))])
+        resampled_pitch   = np.array([np.interp(phins_t.astype(float),t.astype(float),data[:,9].astype(float))])
+        resampled_heading = np.array([np.interp(phins_t.astype(float),t.astype(float),data[:,10].astype(float))])
+        resampled_data = np.transpose(np.concatenate(([resampled_roll,resampled_pitch,resampled_heading])))
+    
     print "GENERATING PLOTS"
 
     print "SAVING TO: " + o_file
@@ -112,13 +123,12 @@ def main(argv):
         pp.savefig(plt.figure(0))
         plt.close("all")
 
-    t = data[:,7]#-data[0,7]
 
     
     plt.figure(1)
     plt.suptitle('Estimated Attitude',y=0.99)
     plt.subplot(311)
-    plt.plot(t,data[:,8]*180.0/math.pi,label="MST")
+    plt.plot(t[0::plot_samp_skip],data[0::plot_samp_skip,8]*180.0/math.pi,label="MST")
     if phins_exists:
         plt.plot(phins_t,phins_data[:,12],label="PHINS")
     plt.ylabel('Roll (degrees)')
@@ -128,7 +138,7 @@ def main(argv):
     if phins_exists:
         plt.legend(bbox_to_anchor=(0., 1., 1., 1.), loc=3,ncol=2, mode="expand", borderaxespad=0.25, fontsize=12)
     plt.subplot(312)
-    plt.plot(t,data[:,9]*180.0/math.pi)
+    plt.plot(t[0::plot_samp_skip],data[0::plot_samp_skip,9]*180.0/math.pi)
     if phins_exists:
         plt.plot(phins_t,phins_data[:,13])
     plt.ylabel('Pitch (degrees)')
@@ -136,7 +146,7 @@ def main(argv):
     plt.axis([t[0],t[-1], -180, 180])
     plt.grid(True)
     plt.subplot(313)
-    plt.plot(t,data[:,10]*180.0/math.pi)
+    plt.plot(t[::plot_samp_skip],data[0::plot_samp_skip,10]*180.0/math.pi)
     if phins_exists:
         plt.plot(phins_t,phins_data[:,14])
     plt.ylabel('Heading (degrees)')
@@ -146,50 +156,56 @@ def main(argv):
     pp.savefig(plt.figure(1))
     plt.close("all")
 
+    if phins_exists:
+        plt.figure(1)
+        plot_comp(plt,phins_t,resampled_data*180.0/math.pi-phins_data[:,12:15],'Attitude Error','rad',1)
+        pp.savefig(plt.figure(1))
+        plt.close("all")
+
     plt.figure(1)
-    plot_comp(plt,t,data[:,11:14],'Angular Rate Bias','rad/s')
+    plot_comp(plt,t,data[:,11:14],'Angular Rate Bias','rad/s',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,14:17],'Acceleration Bias','m/s^2')
+    plot_comp(plt,t,data[:,14:17],'Acceleration Bias','m/s^2',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,17:20],'Mag Bias','')
+    plot_comp(plt,t,data[:,17:20],'Mag Bias','',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,20:23],'Estimated Acceleration','m/s^2')
+    plot_comp(plt,t,data[:,20:23],'Estimated Acceleration','m/s^2',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,23:26],'Estimated Mag','')
+    plot_comp(plt,t,data[:,23:26],'Estimated Mag','',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,26:29],'Measured Acceleration','m/s^2')
+    plot_comp(plt,t,data[:,26:29],'Measured Acceleration','m/s^2',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,29:32],'Measured Angular Rate','rad/s')
+    plot_comp(plt,t,data[:,29:32],'Measured Angular Rate','rad/s',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,32:35],'Measured Mag','')
+    plot_comp(plt,t,data[:,32:35],'Measured Mag','',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
     plt.figure(1)
     y_height = max([abs(data[:,35].min()),abs(data[:,35].max())])
     plt.suptitle('Fluid Pressure',y=0.99)
-    plt.plot(t,data[:,35])
+    plt.plot(t[0::plot_samp_skip],data[0::plot_samp_skip,35])
     plt.ylabel('Temp (C)')
     plt.xlabel('Seconds (s)')
     plt.axis([t[0],t[-1], 0,y_height+y_height/10.0])
@@ -201,12 +217,12 @@ def main(argv):
     if phins_exists:
         
         plt.figure(1)
-        plot_comp(plt,phins_t,phins_data[:,6:9],'PHINS Angular Rate','rad/s')
+        plot_comp(plt,phins_t,phins_data[:,6:9],'PHINS Angular Rate','rad/s',1)
         pp.savefig(plt.figure(1))
         plt.close("all")
 
         plt.figure(1)
-        plot_comp(plt,phins_t,phins_data[:,9:12],'PHINS Acceleration','m/s^2')
+        plot_comp(plt,phins_t,phins_data[:,9:12],'PHINS Acceleration','m/s^2',1)
         pp.savefig(plt.figure(1))
         plt.close("all")
 
