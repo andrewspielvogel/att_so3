@@ -14,9 +14,9 @@ process_att(){
     PDF=$2/microstrain/$3/pdfs/$1.pdf
     PHINS=$2/phins/$3.INS
 
-    #python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6
+    python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6
 
-    #rosrun att_so3 mems_process $CONFIG
+    rosrun att_so3 mems_process $CONFIG
 
     python $ATT_SO3/python/plot_att.py -i $CSV -o $PDF -e $3 -p $PHINS
 

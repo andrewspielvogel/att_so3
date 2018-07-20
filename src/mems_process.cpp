@@ -133,20 +133,19 @@ void print_loaded_params(config_params params)
   printf("***********************************\n");
   printf("           LOADED PARAMS \n");
   printf("***********************************\n");
-  printf(" last_mod: %s\n",params.last_mod.c_str());
-  printf("       hz: %d (s^-1)\n",params.hz);
-  printf("   o_file: %s\n",params.o_file.c_str());
-  printf("   i_file: %s\n",params.i_file.c_str());
-  std::cout<<"R0 = \n"<< params.R0 <<"\n";
-  std::cout<<"R_align = \n"<< params.R_align <<"\n";
-  std::cout<<"K_acc = \n"<< params.K_acc <<"\n";
-  std::cout<<"K_mag = \n"<< params.K_mag <<"\n";
-  std::cout<<"K_ang_bias = \n"<< params.K_ang_bias <<"\n";
-  std::cout<<"K_acc_bias = \n"<< params.K_acc_bias <<"\n";
-  std::cout<<"K_mag_bias = \n"<< params.K_mag_bias <<"\n";
-  std::cout<<"K_g = \n"<< params.K_g <<"\n";
-  std::cout<<"K_north = \n"<< params.K_north <<"\n";
-
+  printf("  last_mod: %s\n",params.last_mod.c_str());
+  printf("        hz: %d (s^-1)\n",params.hz);
+  printf("    o_file: %s\n",params.o_file.c_str());
+  printf("    i_file: %s\n",params.i_file.c_str());
+  printf("        r0: [%f,%f,%f] (rpy)\n",rot2rph(params.R0)(0),rot2rph(params.R0)(1),rot2rph(params.R0)(2));
+  printf("   r_align: [%f,%f,%f] (rpy)\n",rot2rph(params.R_align)(0),rot2rph(params.R_align)(1),rot2rph(params.R_align)(2));
+  printf("     k_acc: [%f,%f,%f] (diag)\n",params.K_acc(0,0),params.K_acc(1,1),params.K_acc(2,2));
+  printf("     k_mag: [%f,%f,%f] (diag)\n",params.K_mag(0,0),params.K_mag(1,1),params.K_mag(2,2));
+  printf("k_ang_bias: [%f,%f,%f] (diag)\n",params.K_ang_bias(0,0),params.K_ang_bias(1,1),params.K_ang_bias(2,2));
+  printf("k_acc_bias: [%f,%f,%f] (diag)\n",params.K_acc_bias(0,0),params.K_acc_bias(1,1),params.K_acc_bias(2,2));
+  printf("k_mag_bias: [%f,%f,%f] (diag)\n",params.K_mag_bias(0,0),params.K_mag_bias(1,1),params.K_mag_bias(2,2));
+  printf("       k_g: [%f,%f,%f] (diag)\n",params.K_g(0,0),params.K_g(1,1),params.K_g(2,2));
+  printf("   k_north: [%f,%f,%f] (diag)\n",params.K_north(0,0),params.K_north(1,1),params.K_north(2,2));
 }
 
 
@@ -214,7 +213,7 @@ int main(int argc, char* argv[])
   int cnt = 1;
   
 
-  fprintf(outfile,"PARAMS,%s,%d,%s,%s,%f,%f,%f,%f,%f,%f,%f\n",params.last_mod.c_str(),params.hz,params.o_file.c_str(),params.i_file.c_str(),params.K_g(0,0),params.K_north(0,0),params.K_acc(0,0),params.K_mag(0,0),params.K_acc_bias(0,0),params.K_ang_bias(0,0),params.K_mag_bias(0,0));
+  fprintf(outfile,"PARAMS,%s,%d,%s,%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",params.last_mod.c_str(),params.hz,params.o_file.c_str(),params.i_file.c_str(),rot2rph(params.R0)(0),rot2rph(params.R0)(1),rot2rph(params.R0)(2),rot2rph(params.R_align)(0),rot2rph(params.R_align)(1),rot2rph(params.R_align)(2),params.K_acc(0,0),params.K_acc(1,1),params.K_acc(2,2),params.K_mag(0,0),params.K_mag(1,1),params.K_mag(2,2),params.K_ang_bias(0,0),params.K_ang_bias(1,1),params.K_ang_bias(2,2),params.K_acc_bias(0,0),params.K_acc_bias(1,1),params.K_acc_bias(2,2),params.K_mag_bias(0,0),params.K_mag_bias(1,1),params.K_mag_bias(2,2),params.K_g(0,0),params.K_g(1,1),params.K_g(2,2),params.K_north(0,0),params.K_north(1,1),params.K_north(2,2));
 
   while (std::getline(infile, line))
     {

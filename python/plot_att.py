@@ -96,10 +96,19 @@ def main(argv):
         plt.figure(0)
         plt.axis('off')
         plt.text(0.5,0.7,"CONFIG PARAMS USED:\n",ha='center',va='center')
-        plt.text(0.05,0.2,"  Date Modified: " + str(params.as_matrix()[0][1]) +
-                 "\n                    Hz: " + str(params.as_matrix()[0][2]) +
-                 "\n Processed File: " + str(params.as_matrix()[0][3]) +
-                 "\n           MST File: " + str(params.as_matrix()[0][4]) + "\n")
+        plt.text(0.05,0.2,"Date Modified: " + str(params.as_matrix()[0][1]) +
+                 "\nHz: " + str(params.as_matrix()[0][2]) +
+                 "\nProcessed File: " + str(params.as_matrix()[0][3]) +
+                 "\nMST File: " + str(params.as_matrix()[0][4]) +
+                 "\nr0: [" + str(params.as_matrix()[0][5]) + "," + str(params.as_matrix()[0][6]) + "," + str(params.as_matrix()[0][7]) + "] (rpy)" +
+                 "\nr_align: [" + str(params.as_matrix()[0][8]) + "," + str(params.as_matrix()[0][9]) + "," + str(params.as_matrix()[0][10]) + "] (rpy)" +
+                 "\nk_acc: [" + str(params.as_matrix()[0][11]) + "," + str(params.as_matrix()[0][12]) + "," + str(params.as_matrix()[0][13]) + "] (diag)" +
+                 "\nk_mag: [" + str(params.as_matrix()[0][14]) + "," + str(params.as_matrix()[0][15]) + "," + str(params.as_matrix()[0][16]) + "] (diag)" +
+                 "\nk_ang_bias: [" + str(params.as_matrix()[0][17]) + "," + str(params.as_matrix()[0][18]) + "," + str(params.as_matrix()[0][19]) + "] (diag)" +
+                 "\nk_acc_bias: [" + str(params.as_matrix()[0][20]) + "," + str(params.as_matrix()[0][21]) + "," + str(params.as_matrix()[0][22]) + "] (diag)" +
+                 "\nk_mag_bias: [" + str(params.as_matrix()[0][23]) + "," + str(params.as_matrix()[0][24]) + "," + str(params.as_matrix()[0][25]) + "] (diag)" +
+                 "\nk_g: [" + str(params.as_matrix()[0][26]) + "," + str(params.as_matrix()[0][27]) + "," + str(params.as_matrix()[0][28]) + "] (diag)" +
+                 "\nk_north: [" + str(params.as_matrix()[0][29]) + "," + str(params.as_matrix()[0][30]) + "," + str(params.as_matrix()[0][31]) + "] (diag)")
         pp.savefig(plt.figure(0))
         plt.close("all")
 

@@ -20,7 +20,7 @@
 
 /**
  *
- * @brief Class for launching MEMS bias estimation rosnode.
+ * @brief Class For Launching Attitude Estimation Rosnode.
  * 
  */
 class AttNode
@@ -31,7 +31,7 @@ private:
   ros::Publisher chatter_; /**< Quaternion publisher. */
   ros::Publisher chatter_rpy_; /**< RPY publisher. */
 
-  SO3Att* att_;
+  SO3Att* att_; /**< Attitude Estimation Object. */
   
 public:
 
