@@ -14,7 +14,7 @@ process_att(){
     PDF=$2/microstrain/$3/pdfs/$1.pdf
     PHINS=$2/phins/$3.INS
 
-    python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6
+    python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 -R $5 -a $6 --k_acc $7 --k_mag $8 --k_acc_bias $9 --k_ang_bias $10 --k_mag_bias $11
 
     rosrun att_so3 mems_process $CONFIG
 
@@ -40,7 +40,7 @@ k_ang_bias=[0.0001,0.0001,0.01]
 k_mag_bias=[1,1,1]
 
 
-process_att $EXP $DIR $LOG $HZ $rpy_r0 $rpy_align
+process_att $EXP $DIR $LOG $HZ $rpy_r0 $rpy_align $k_acc $k_mag $k_acc_bias $k_ang_bias $k_mag_bias
 
 
 

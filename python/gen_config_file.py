@@ -17,8 +17,9 @@ def main(argv):
     k_mag_bias = '[1,1,1]'
     k_g = '[1,1,1]'
     k_north = '[1,1,1]'
+    
     try:
-        opts,args = getopt.getopt(argv,"hi:o:c:l:a:R:k:z:",["ifile=","help","ofile=","hz=","lat=","cfile=","rpy_align=","rpy_Ro="])
+        opts,args = getopt.getopt(argv,"hi:o:c:l:a:R:k:z:",["ifile=","help","ofile=","hz=","lat=","cfile=","rpy_align=","rpy_Ro=","k_acc=","k_mag","k_acc_bias","k_ang_bias","k_mag_bias","k_g","k_north"])
     except getopt.GetoptError:
         print "USAGE:"
         print 'gen_config_file.py -i <KVHfile> -o <estimatoroutputfile> -c <configfile_generated>'
@@ -33,7 +34,12 @@ def main(argv):
             print "-z , --hz    : Sampling frequency (s^-1)."
             print "-l , --lat   : Latitude (degrees)."
             print "-a , --rpy_align : [roll, pitch, yaw] (radians)."
-            print "-R , --rpy_ro    : [roll, pitch, yaw] (radians)."
+            print "-R , --rpy_Ro    : [roll, pitch, yaw] (radians)."
+            print "--k_acc (diag)."
+            print "--k_mag (diag)."
+            print "--k_acc_bias (diag)."
+            print "--k_ang_bias (diag)."
+            print "--k_mag_bias (diag)."
             sys.exit()
         elif opt in ("-i","--ifile"):
             i_file = "\"" + arg + "\""
@@ -48,7 +54,19 @@ def main(argv):
         elif opt in ("-a","--rpy_align"):
             rpy_align = arg
         elif opt in ("-R","--rpy_Ro"):
-            rpy_r0 = arg
+            rpy_Ro = arg
+        elif opt in ("-k"):
+            k = arg
+        elif opt in ("--k_acc"):
+            k_acc = arg
+        elif opt in ("--k_mag"):
+            k_mag = arg
+        elif opt in ("--k_acc_bias"):
+            k_acc_bias = arg
+        elif opt in ("--k_ang_bias"):
+            k_ang_bias = arg
+        elif opt in ("--k_mag_bias"):
+            k_mag_bias = arg
 
     now = datetime.datetime.now()
 
@@ -61,15 +79,12 @@ def main(argv):
     file.write("o_file = " + o_file + "\n")
     file.write("i_file = " + i_file + "\n")
     file.write("rpy_align = " + rpy_align + "\n")
-    file.write("rpy_r0 = " + rpy_r0 + "\n")
+    file.write("rpy_Ro = " + rpy_Ro + "\n")
     file.write("k_acc = " + k_acc + "\n")
     file.write("k_mag = " + k_mag + "\n")
     file.write("k_acc_bias = " + k_acc_bias + "\n")
     file.write("k_ang_bias = " + k_ang_bias + "\n")
     file.write("k_mag_bias = " + k_mag_bias + "\n")
-    file.write("k_g = "        + k_g + "\n")
-    file.write("k_north = "    + k_north + "\n")
-
     file.close()
 
 
