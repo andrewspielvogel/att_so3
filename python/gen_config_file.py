@@ -98,6 +98,8 @@ def main(argv):
     file.write("mag_bias = " + mag_bias + "\n")
     file.write("acc_bias = " + acc_bias + "\n")
     file.write("ang_bias = " + ang_bias + "\n")
+    file.write("k_g = " + k_g + "\n")
+    file.write("k_north = " + k_north + "\n")
     file.close()
 
 
