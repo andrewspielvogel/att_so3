@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
   int minute;
   float second;
   
-  float rov_time;
-  float ros_time;
+  double rov_time;
+  double ros_time;
 
   printf("***********************************\n");
   printf("    RUNNING ATTITUDE ESTIMATION\n");
@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
   bool start = false;
   int hours = 0;
   int minutes = 0;
+  int seconds = 0;
 
   int cnt = 1;
   
@@ -78,7 +79,7 @@ int main(int argc, char* argv[])
   while (std::getline(infile, line))
     {
 
-      sscanf(line.c_str(),"%s %d/%d/%d %d:%d:%f %f %f %lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%f\n",msg_type,&year,&month,&day,&hour,&minute,&second,&rov_time,&ros_time,&packet.t,&packet.ang(0),&packet.ang(1),&packet.ang(2),&packet.acc(0),&packet.acc(1),&packet.acc(2),&packet.mag(0),&packet.mag(1),&packet.mag(2),&packet.fluid_pressure);
+      sscanf(line.c_str(),"%s %d/%d/%d %d:%d:%f %lf %lf %lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%f\n",msg_type,&year,&month,&day,&hour,&minute,&second,&rov_time,&ros_time,&packet.t,&packet.ang(0),&packet.ang(1),&packet.ang(2),&packet.acc(0),&packet.acc(1),&packet.acc(2),&packet.mag(0),&packet.mag(1),&packet.mag(2),&packet.fluid_pressure);
  
 
     if (!start)
@@ -102,13 +103,17 @@ int main(int argc, char* argv[])
       fprintf(outfile,"ATT_PRO,%d,%02d,%02d,%02d,%02d,%02f,%f,%f,%f,%f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",year,month,day,hour,minute,second,packet.t,rph_mems(0),rph_mems(1),rph_mems(2),bias.ang_bias(0),bias.ang_bias(1),bias.ang_bias(2),bias.acc_bias(0),bias.acc_bias(1),bias.acc_bias(2),bias.mag_bias(0),bias.mag_bias(1),bias.mag_bias(2),bias.acc_hat(0),bias.acc_hat(1),bias.acc_hat(2),bias.mag_hat(0),bias.mag_hat(1),bias.mag_hat(2),packet.acc(0),packet.acc(1),packet.acc(2),packet.ang(0),packet.ang(1),packet.ang(2),packet.mag(0),packet.mag(1),packet.mag(2),packet.fluid_pressure);
     }
     
-    if ((((int)time) % (60) == 0) && ((int)time/60 != minutes)) {
+    if ((((int)time) % (30) == 0)) {
       
       hours   = ((int) time)/3600;
       minutes = ((int) time - hours*3600)/60;
-      char buffer [256];
-      int n = sprintf(buffer,"%02d:%02d:00 OF DATA PROCESSED",hours,minutes);
-      std::cout<<"\r"<<buffer<<std::flush;
+      int seconds_ = ((int) time - hours*3600 - minutes*60);
+      if (seconds_ != seconds) {
+	seconds = seconds_;
+	char buffer [256];
+	int n = sprintf(buffer,"%02d:%02d:%02d OF DATA PROCESSED",hours,minutes,seconds);
+	std::cout<<"\r"<<buffer<<"\n";//std::flush;
+      }
     }
 
     cnt++;

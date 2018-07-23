@@ -29,7 +29,7 @@ process_att(){
 EXP=exp1
 
 DIR=/log
-LOG=2018_07_18_18_11
+LOG=2018_07_22_17_01
 HZ=1000
 rpy_align=[0,0,3.14]
 rpy_ro=[0,0,0]
