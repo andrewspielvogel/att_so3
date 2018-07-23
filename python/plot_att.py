@@ -14,7 +14,7 @@ def calc_bound(data):
 
 def plot_comp(plt,t,data,title,units,step):
 
-    y_height = calc_bound(data[:,0:3])
+    y_height = calc_bound(data[5000:-1,0:3])
     
     if y_height==0.0:
         y_height = 1
@@ -39,7 +39,7 @@ def plot_comp(plt,t,data,title,units,step):
     plt.plot(t,data[:,2])
     plt.ylabel('Z (' + units + ')')
     plt.xlabel('Seconds (s)')
-    plt.axis([t[0],t[-1], -y_height-y_height/10.0,y_height+y_height/10.0])
+    plt.axis([t[0],t[-1], -10,10])#-y_height-y_height/10.0,y_height+y_height/10.0])
     plt.grid(True)
 
 def main(argv):
@@ -158,7 +158,8 @@ def main(argv):
 
     if phins_exists:
         plt.figure(1)
-        plot_comp(plt,phins_t,resampled_data*180.0/math.pi-phins_data[:,12:15],'Attitude Error','rad',1)
+        error = resampled_data-phins_data[:,12:15]*math.pi/180.0
+        plot_comp(plt,phins_t,np.unwrap(error)*180.0/math.pi,'Attitude Error','rad',1)
         pp.savefig(plt.figure(1))
         plt.close("all")
 
