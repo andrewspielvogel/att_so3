@@ -46,6 +46,8 @@ def main(argv):
             print "--acc_bias (diag)."
             print "--ang_bias (diag)."
             print "--mag_bias (diag)."
+            print "--k_g (diag)."
+            print "--k_north (diag)."
             sys.exit()
         elif opt in ("-i","--ifile"):
             i_file = "\"" + arg + "\""
@@ -77,6 +79,10 @@ def main(argv):
             acc_bias = arg
         elif opt in ("--ang_bias"):
             ang_bias = arg
+        elif opt in ("--k_g"):
+            k_g = arg
+        elif opt in ("--k_north"):
+            k_north = arg
 
     now = datetime.datetime.now()
 

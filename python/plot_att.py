@@ -39,7 +39,7 @@ def plot_comp(plt,t,data,title,units,step):
     plt.plot(t,data[:,2])
     plt.ylabel('Z (' + units + ')')
     plt.xlabel('Seconds (s)')
-    plt.axis([t[0],t[-1], -10,10])#-y_height-y_height/10.0,y_height+y_height/10.0])
+    plt.axis([t[0],t[-1], -y_height-y_height/10.0,y_height+y_height/10.0])
     plt.grid(True)
 
 def main(argv):
@@ -160,6 +160,12 @@ def main(argv):
         plt.figure(1)
         error = resampled_data-phins_data[:,12:15]*math.pi/180.0
         plot_comp(plt,phins_t,np.unwrap(error)*180.0/math.pi,'Attitude Error','rad',1)
+        plt.subplot(311)
+        plt.axis([t[0],t[-1], -1,1])
+        plt.subplot(312)
+        plt.axis([t[0],t[-1], -1,1])
+        plt.subplot(313)
+        plt.axis([t[0],t[-1], -5,5])
         pp.savefig(plt.figure(1))
         plt.close("all")
 
