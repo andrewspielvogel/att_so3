@@ -45,9 +45,9 @@ frame_id: Frame ID of the IMU (dscl_msgs::Imu9DOF) topic subscribed to. Default:
 roslaunch att_so3/att.launch
 ```
 
-## Topic
+## Topics
 
-Topic subscribed to:
+Node subscribed to:
 - IMU Data topic (dscl_msgs::Imu9DOF)
 ```
 /frame_id_bias/imu_corrected
