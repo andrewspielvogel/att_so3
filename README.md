@@ -32,11 +32,11 @@ lat : Latitude (degrees). Default: 39.32
 
 r0 : Initial vehicle estimate of vehicle attitude (In RPY Euler Angles). Default: "[0,0,0]"
 
-k_g: Diagonal of the gravity (local level) gain matrix for the attitude estimator. 
+k_g: Diagonal of the gravity (local level) gain matrix for the attitude estimator. Default: "[1,1,1]"
 
-k_north: Diagonal of the north gain matrix of the attitude estimator. 
+k_north: Diagonal of the north gain matrix of the attitude estimator. Default: "[1,1,1]"
 
-frame_id: Frame ID of the IMU (dscl_msgs::Imu9DOF) topic subscribed to.
+frame_id: Frame ID of the IMU (dscl_msgs::Imu9DOF) topic subscribed to. Default: "ms"
 
 ## Using the Node
 
