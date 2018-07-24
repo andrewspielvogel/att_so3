@@ -60,7 +60,7 @@ public:
     n.param<std::string>("k_north",k_north, "[1,1,1]");
     n.param<std::string>("r0",r0,"[0,0,0]");
     n.param<std::string>("lat",lat,"39.32");
-    n.param<std::string>("frame_id",params.frameId,"imu");
+    n.param<std::string>("frame_id",params.frameId,"ms");
     
     sscanf(r0.c_str(),"[%lf,%lf,%lf]",&rpy(0),&rpy(1),&rpy(2));
 
