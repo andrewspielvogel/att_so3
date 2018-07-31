@@ -5,6 +5,7 @@
         <param name="k_g" value="[1,1,1]" type="string" />
         <param name="k_north" value="[1,1,1]" type="string" />
         <param name="r0" value="[0,0,0]" type="string" />
+        <param name="r_align" value="[0,0,3.14]" type="string" />
 	<param name="lat" value="39.32" type="string" />
   	<param name="frame_id" type="string" value="ms"/>
 
