@@ -53,7 +53,8 @@ public:
     std::string k_north;
     std::string r0;
     std::string lat;
-
+    std::string r_align;
+    
     Eigen::Vector3d rpy;
 
     n.param<std::string>("k_g",k_g, "[1,1,1]");
@@ -61,12 +62,17 @@ public:
     n.param<std::string>("r0",r0,"[0,0,0]");
     n.param<std::string>("lat",lat,"39.32");
     n.param<std::string>("frame_id",params.frameId,"ms");
+    n.param<std::string>("r_align",r_align,"[0,0,0]");
     
     sscanf(r0.c_str(),"[%lf,%lf,%lf]",&rpy(0),&rpy(1),&rpy(2));
 
     params.K_g          = stringToDiag(k_g);
     params.K_north      = stringToDiag(k_north);
     params.R0           = rpy2rot(rpy);
+
+    sscanf(r_align.c_str(),"[%lf,%lf,%lf]",&rpy(0),&rpy(1),&rpy(2));
+
+    params.R_align      = rpy2rot(rpy);
     params.lat          = std::stod(lat);
     
     chatter_ = n.advertise<geometry_msgs::QuaternionStamped>("att",1);
@@ -101,7 +107,7 @@ public:
     geometry_msgs::QuaternionStamped att;
     geometry_msgs::Vector3Stamped rpy;
 
-    Eigen::Vector3d rph = rot2rph(att_->R_ni)*180.0/M_PI;
+    Eigen::Vector3d rph = rot2rph(att_->R_ni*params.R_align.transpose())*180.0/M_PI;
 
     rpy.header.stamp    = msg->header.stamp;
     rpy.header.frame_id = params.frameId;
