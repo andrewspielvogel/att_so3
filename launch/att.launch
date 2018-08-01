@@ -1,6 +1,6 @@
 <launch>
 
-    <node pkg="att_so3" type="att_so3_publisher" name="ms_att" output="screen">
+    <node pkg="att_so3" type="att_so3_publisher" name="ms_att" output="screen" respawn="true">
 
         <param name="k_g" value="[1,1,1]" type="string" />
         <param name="k_north" value="[1,1,1]" type="string" />
