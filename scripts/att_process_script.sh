@@ -4,15 +4,15 @@ process_att(){
 
     ATT_SO3="$(rospack find att_so3)"
 
-    mkdir -p $2/microstrain/$3/configs
-    mkdir -p $2/microstrain/$3/processed
-    mkdir -p $2/microstrain/$3/pdfs
+    mkdir -p $2/configs
+    mkdir -p $2/processed
+    mkdir -p $2/pdfs
     
-    MST=$2/microstrain/$3.MST
-    CSV=$2/microstrain/$3/processed/$1.csv
-    CONFIG=$2/microstrain/$3/configs/$1.m
-    PDF=$2/microstrain/$3/pdfs/$1.pdf
-    PHINS=$2/phins/$3.INS
+    MST=$2/$3.MST
+    CSV=$2/processed/$1.csv
+    CONFIG=$2/configs/$1.m
+    PDF=$2/pdfs/$1.pdf
+    PHINS=$2/$3.INS
 
     python $ATT_SO3/python/gen_config_file.py -i $MST -o $CSV -c $CONFIG -z $4 --rpy_ro $5 --rpy_align $6 --k_acc $7 --k_mag $8 --k_acc_bias $9 --k_ang_bias ${10} --k_mag_bias ${11} --acc_bias ${12} --ang_bias ${13} --mag_bias ${14} --k_g ${15} --k_north ${16}
 
@@ -26,10 +26,10 @@ process_att(){
 
 
 
-EXP=exp8
+EXP=exp1
 
 DIR=/log
-LOG=test
+LOG=2018_07_27
 HZ=1000
 rpy_align=[0,0,3.14]
 rpy_ro=[0,0,0.1]
@@ -45,24 +45,92 @@ acc_bias=[0,0,0]
 ang_bias=[0,0,0]
 mag_bias=[0,0,0]
 k_g=[0.25,0.25,0.25]
-k_north=[0.1,0.1,0.1]
+k_north=[0.025,0.025,0.025]
+
+
+#process_att $EXP $DIR $LOG $HZ $rpy_ro $rpy_align $k_acc $k_mag $k_acc_bias $k_ang_bias $k_mag_bias $acc_bias $ang_bias $mag_bias $k_g $k_north
+
+
+
+
+EXP=exp2
+
+DIR=/log
+LOG=2018_07_31_15_09
+HZ=1000
+rpy_align=[0,0,3.14]
+rpy_ro=[0,0,0]
+k_acc=[0.1,0.1,0.1]
+k_mag=[0.1,0.1,0.1]
+#k_acc_bias=[0.01,0.01,0.01]
+k_acc_bias=[0,0,0]
+k_ang_bias=[0.000005,0.000005,0.000005]
+#k_ang_bias=[0,0,0]
+k_mag_bias=[0.1,0.1,1]
+#k_mag_bias=[0,0,0]
+acc_bias=[0,0,0]
+ang_bias=[0,0,0]
+mag_bias=[0,0,0]
+k_g=[0.25,0.25,0.25]
+k_north=[0.025,0.025,0.025]
+
+
+#process_att $EXP $DIR $LOG $HZ $rpy_ro $rpy_align $k_acc $k_mag $k_acc_bias $k_ang_bias $k_mag_bias $acc_bias $ang_bias $mag_bias $k_g $k_north
+
+
+
+
+
+
+EXP=exp3
+
+DIR=/log
+LOG=2018_08_06_17-19
+HZ=500
+rpy_align=[0,0,3.14]
+rpy_ro=[0,0,0]
+k_acc=[0.1,0.1,0.1]
+k_mag=[0.1,0.1,0.1]
+k_acc_bias=[0.01,0.01,0.01]
+#k_acc_bias=[0,0,0]
+k_ang_bias=[0.00005,0.00005,0.00005]
+#k_ang_bias=[0,0,0]
+k_mag_bias=[0.1,0.1,0.1]
+#k_mag_bias=[0,0,0]
+acc_bias=[0,0,0]
+ang_bias=[0,0,0]
+mag_bias=[0,0,0]
+k_g=[0.1,0.1,0.1]
+k_north=[0.05,0.05,0.05]
+
+
+#process_att $EXP $DIR $LOG $HZ $rpy_ro $rpy_align $k_acc $k_mag $k_acc_bias $k_ang_bias $k_mag_bias $acc_bias $ang_bias $mag_bias $k_g $k_north
+
+
+
+EXP=exp1
+
+DIR=/home/spiels/exp/dive2
+LOG=2018_08_07
+HZ=500
+rpy_align=[0,0,3.14]
+rpy_ro=[0,0,0]
+k_acc=[0.1,0.1,0.1]
+k_mag=[0.1,0.1,0.1]
+k_acc_bias=[0.05,0.05,0.05]
+#k_acc_bias=[0,0,0]
+k_ang_bias=[0.00005,0.00005,0.00005]
+#k_ang_bias=[0,0,0]
+k_mag_bias=[0.1,0.1,0.1]
+#k_mag_bias=[0,0,0]
+acc_bias=[0,0,0]
+ang_bias=[0,0,0]
+mag_bias=[0,0,0]
+k_g=[0.1,0.1,0.1]
+k_north=[0.05,0.05,0.05]
 
 
 process_att $EXP $DIR $LOG $HZ $rpy_ro $rpy_align $k_acc $k_mag $k_acc_bias $k_ang_bias $k_mag_bias $acc_bias $ang_bias $mag_bias $k_g $k_north
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

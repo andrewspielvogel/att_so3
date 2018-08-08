@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 
     Eigen::Vector3d rph_mems = rot2rph(att.R_ni*params.R_align.transpose());
 
-    if (1)//(cnt % (params.hz/2)) == 0)
+    if ((cnt % (params.hz/10)) == 0)
     {
       fprintf(outfile,"ATT_PRO,%d,%02d,%02d,%02d,%02d,%02f,%f,%f,%f,%f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",year,month,day,hour,minute,second,packet.t,rph_mems(0),rph_mems(1),rph_mems(2),bias.ang_bias(0),bias.ang_bias(1),bias.ang_bias(2),bias.acc_bias(0),bias.acc_bias(1),bias.acc_bias(2),bias.mag_bias(0),bias.mag_bias(1),bias.mag_bias(2),bias.acc_hat(0),bias.acc_hat(1),bias.acc_hat(2),bias.mag_hat(0),bias.mag_hat(1),bias.mag_hat(2),packet.acc(0),packet.acc(1),packet.acc(2),packet.ang(0),packet.ang(1),packet.ang(2),packet.mag(0),packet.mag(1),packet.mag(2),packet.fluid_pressure);
     }

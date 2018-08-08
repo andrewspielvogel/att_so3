@@ -84,9 +84,11 @@ def main(argv):
     data = read_csv(i_file,skiprows=1,header=None)
     print "LOADED FILE: " + i_file
 
+
     data = data.as_matrix()
     t = data[:,7]#-data[0,7]
 
+    
     if phins_exists:
         print "LOADING FILE: " + phins_file
         phins_data = read_csv(phins_file,header=None,sep='\s+|,',engine='python')
@@ -165,7 +167,7 @@ def main(argv):
         plt.subplot(312)
         plt.axis([t[0],t[-1], -1,1])
         plt.subplot(313)
-        plt.axis([t[0],t[-1], -5,5])
+        plt.axis([t[0],t[-1], -10,10])
         pp.savefig(plt.figure(1))
         plt.close("all")
 
@@ -210,6 +212,16 @@ def main(argv):
     plt.close("all")
 
     plt.figure(1)
+    plt.suptitle('Measured Mag Norm',y=0.99)
+    plt.plot(t,np.sum(np.abs(data[:,32:35])**2,axis=1)**(1./2))
+    plt.ylabel('Norm')
+    plt.xlabel('Seconds (s)')
+    plt.grid(True)
+    pp.savefig(plt.figure(1))
+    plt.close("all")
+
+
+    plt.figure(1)
     y_height = max([abs(data[:,35].min()),abs(data[:,35].max())])
     plt.suptitle('Fluid Pressure',y=0.99)
     plt.plot(t[0::plot_samp_skip],data[0::plot_samp_skip,35])
@@ -222,21 +234,21 @@ def main(argv):
 
 
     if phins_exists:
+
+        plt.figure(1)
+        plot_comp(plt,phins_t,phins_data[:,6:9],'PHINS Angular Rate','degrees/s',1)
+        pp.savefig(plt.figure(1))
+        plt.close("all")
+
+        plt.figure(1)
+        plot_comp(plt,phins_t,phins_data[:,9:12]*9.81,'PHINS Acceleration','m/s^2',1)
+        pp.savefig(plt.figure(1))
+        plt.close("all")
         
-        plt.figure(1)
-        plot_comp(plt,phins_t,phins_data[:,6:9],'PHINS Angular Rate','rad/s',1)
-        pp.savefig(plt.figure(1))
-        plt.close("all")
-
-        plt.figure(1)
-        plot_comp(plt,phins_t,phins_data[:,9:12],'PHINS Acceleration','m/s^2',1)
-        pp.savefig(plt.figure(1))
-        plt.close("all")
-
         plt.figure(1)
         plt.suptitle('Heave',y=0.99)
         plt.plot(phins_t,phins_data[:,15])
-        plt.ylabel('Heave')
+        plt.ylabel('Heave (m)')
         plt.xlabel('Seconds (s)')
         plt.grid(True)
         pp.savefig(plt.figure(1))
