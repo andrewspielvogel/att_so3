@@ -69,12 +69,15 @@ void SO3Att::step(ImuPacket measurement)
    **************************************************************/
 
   double dt = measurement.t - prev_t_;
-  
+
   P_ = R_ni.transpose()*a_n_.normalized()*a_n_.normalized().transpose()*R_ni;
 
   // Define local level (g_error_) and heading (h_error_) error terms
   g_error_ = skew((measurement.acc).normalized())*R_ni.transpose()*a_n_.normalized();
-  h_error_ = P_*skew(((Eigen::Matrix3d::Identity() - P_)*measurement.mag).normalized())*R_ni.transpose().block<3,1>(0,0);
+
+  Eigen::Vector3d north_est = (Eigen::Matrix3d::Identity() - P_)*measurement.mag;
+
+  h_error_ = P_*(skew(north_est.normalized())*R_ni.transpose().block<3,1>(0,0));
   
   R_ni     =  R_ni*((skew(K_g_*g_error_ + K_north_*h_error_ + measurement.ang - R_ni.transpose()*w_E_n_)*dt).exp());
 
