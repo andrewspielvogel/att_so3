@@ -167,7 +167,7 @@ def main(argv):
         plt.subplot(312)
         plt.axis([t[0],t[-1], -1,1])
         plt.subplot(313)
-        plt.axis([t[0],t[-1], 0,10])
+        plt.axis([t[0],t[-1], -20,20])
         pp.savefig(plt.figure(1))
         plt.close("all")
 
@@ -192,7 +192,7 @@ def main(argv):
     plt.close("all")
 
     plt.figure(1)
-    plot_comp(plt,t,data[:,23:26],'Estimated Mag','',plot_samp_skip)
+    plot_comp(plt,t,data[:,23:26]-data[:,17:20],'Estimated Mag corr','',plot_samp_skip)
     pp.savefig(plt.figure(1))
     plt.close("all")
 
@@ -222,8 +222,8 @@ def main(argv):
 
     plt.figure(1)
     plt.suptitle('Mag',y=0.99)
-    plt.plot(data[:,32]-data[:,17],data[:,33]-data[:,18],label="Mag")
-    plt.plot(data[:,32],data[:,33],label="Mag Corrected")
+    plt.plot(data[:,32]-data[:,17],data[:,33]-data[:,18],label="Mag corrected")
+    plt.plot(data[:,32],data[:,33],label="Mag")
     plt.plot(data[:,32]-data[-1,17],data[:,33]-data[-1,18])
     plt.ylabel('Y')
     plt.xlabel('X')
